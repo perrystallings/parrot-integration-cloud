@@ -11,18 +11,12 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = [
-    'google-cloud-bigquery',
-    'requests',
-    'openai',
-    'jsonpath-ng',
-]
+with open('requirements.txt') as requirements_file:
+    requirements = requirements_file.read()
 
-test_requirements = [
-    'pytest>=3',
-    'responses'
+with open('requirements_dev.txt') as test_requirements_file:
+    test_requirements = test_requirements_file.read()
 
-]
 
 setup(
     author="Perry Stallings",
@@ -45,10 +39,10 @@ setup(
     include_package_data=True,
     keywords='parrot_integrations',
     name='parrot-integrations-cloud',
-    packages=[f'parrot_integrations.{i}' for i in os.listdir('./parrot_integrations') if os.path.isdir(os.path.join('./parrot_integrations', i))],
+    packages=[i[0].replace('./', '').replace('/', '.') for i in os.walk('./parrot_integrations')],
     test_suite='tests',
     tests_require=test_requirements,
-    url='https://github.com/perrystallings/parrot_integrations_cloud',
-    version='0.0.2',
+    url='https://github.com/perrystallings/parrot-integrations-cloud',
+    version='0.0.1',
     zip_safe=False
 )
