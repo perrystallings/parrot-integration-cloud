@@ -55,6 +55,7 @@ lint/black: ## check style with black
 lint: lint/flake8 lint/black ## check style
 
 test: ## run tests quickly with the default Python
+# 	gcp-storage-emulator start --host=localhost --port=9023 --in-memory --default-bucket=base &
 	pytest --verbose --cov=./parrot_integrations --cov-fail-under=90 -rfE -p no:warnings
 
 test-all: ## run tests on every Python version with tox

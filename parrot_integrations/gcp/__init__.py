@@ -1,7 +1,7 @@
 from .bigquery import *
 
 
-def get_schema():
+def get_integration_schema():
     return dict(
         type='object',
         additionalProperties=False,
@@ -47,15 +47,19 @@ def get_schema():
                             ),
                             auth_uri=dict(
                                 type='string',
+                                format='uri'
                             ),
                             token_uri=dict(
                                 type='string',
+                                format='uri'
                             ),
                             auth_provider_x509_cert_url=dict(
                                 type='string',
+                                format='uri'
                             ),
                             client_x509_cert_url=dict(
                                 type='string',
+                                format='uri'
                             ),
                             universe_domain=dict(
                                 type='string',

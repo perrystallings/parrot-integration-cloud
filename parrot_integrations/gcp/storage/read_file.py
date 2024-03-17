@@ -1,41 +1,46 @@
 def get_schema() -> dict:
     return dict(
-        type='object',
-        additionalProperties=False,
+        name=f'Read File',
         description='Read File Contents',
-        required=['inputs', 'outputs'],
-        properties=dict(
-            inputs=dict(
-                type='object',
-                additionalProperties=False,
-                required=['bucket_name', 'file_prefix'],
-                properties=dict(
-                    bucket_name=dict(
-                        type='string'
-                    ),
-                    file_name=dict(
-                        type='string'
-                    ),
-                    file_type=dict(
-                        type='string',
-                        enum=['TEXT', 'CSV', 'JSONL']
-                    )
-                )
-            ),
-            outputs=dict(
-                type='object',
-                additionalProperties=False,
-                required=['output'],
-                properties=dict(
-                    output=dict(oneOf=[
-                        dict(
-                            type='array',
-                            items=dict(type='object')
-                        ),
-                        dict(
+        is_trigger=False,
+        schema=dict(
+            type='object',
+            additionalProperties=False,
+            description='Read File Contents',
+            required=['inputs', 'outputs'],
+            properties=dict(
+                inputs=dict(
+                    type='object',
+                    additionalProperties=False,
+                    required=['bucket_name', 'file_name', 'file_type'],
+                    properties=dict(
+                        bucket_name=dict(
                             type='string'
+                        ),
+                        file_name=dict(
+                            type='string'
+                        ),
+                        file_type=dict(
+                            type='string',
+                            enum=['TEXT', 'CSV', 'JSONL']
                         )
-                    ])
+                    )
+                ),
+                outputs=dict(
+                    type='object',
+                    additionalProperties=False,
+                    required=['content'],
+                    properties=dict(
+                        content=dict(oneOf=[
+                            dict(
+                                type='array',
+                                items=dict(type='object')
+                            ),
+                            dict(
+                                type='string'
+                            )
+                        ])
+                    )
                 )
             )
         )
@@ -51,12 +56,12 @@ def process(integration, inputs, **kwargs):
     blob = client.bucket(bucket_name=inputs['bucket_name']).blob(inputs['file_name'])
 
     with TemporaryFile('wt+') as file:
-        file.write(blob.download_as_string())
+        file.write(blob.download_as_string().decode('utf-8'))
         file.seek(0)
         output = process_file(file_type=inputs['file_type'], file=file)
 
     return dict(
-        output=output
+        content=output
     )
 
 

@@ -1,0 +1,19 @@
+version: '3.7'
+
+services:
+  test:
+    build: .
+    command: bash test.sh
+    depends_on:
+      - bigquery
+    volumes:
+      - ./tests:/base/tests
+      - ./client.json:/base/client.json
+  storage:
+    image: fsouza/fake-gcs-server
+    command: -scheme both
+  bigquery:
+    image: ghcr.io/goccy/bigquery-emulator:latest
+    command: --project=test-project
+    environment:
+      STORAGE_EMULATOR_HOST: http://storage:8000
